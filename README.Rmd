@@ -21,7 +21,7 @@ A package to calculate clusterability in clusters of scRNA-seq data. By applying
 
 This how you can use the functions in this R package. The most important one is sigma_funct, which calculates the clusterability per cluster. 
 
-```{r}
+```{r, echo = FALSE}
 library(SIGMA)
 library(splatter)
 library(ggplot2)

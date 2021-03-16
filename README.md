@@ -19,30 +19,6 @@ Example
 This how you can use the functions in this R package. The most important
 one is sigma\_funct, which calculates the clusterability per cluster.
 
-``` r
-library(SIGMA)
-library(splatter)
-library(ggplot2)
-
-#Load sample data simulated with splatter
-data("splatO")
-
-expr <- counts(splatO)
-expr <- expr[rowSums(expr)>0,]
-
-#Normalize and log-transform the data
-expr.norm <- t(t(expr)/colSums(expr))*10000
-expr.norm.log <- log(expr.norm + 1)
-
-#Create toy example of a data set
-test.cluster <- as.character(splatO$Group)
-test.cluster[test.cluster == "Group3"] <- "Group2"
-test.cluster[test.cluster == "Group4"] <- "Group2"
-
-#Main funcion that calculates the clusterability
-out <- sigma_funct(expr = expr.norm.log, clusters = test.cluster, exclude = data.frame(clsm = log(colSums(expr) + 1)))
-```
-
     ## Calculating values for cluster  Group5 
     ## Dim:  750 148 
     ## Calculating svd ... 
