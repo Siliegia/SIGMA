@@ -12,16 +12,16 @@ A package to calculate clusterability in clusters of scRNA-seq data. By applying
 
 
 ## Installation
-```{r}
+```{r, eval = FALSE}
 # install.packages("devtools")
-#devtools::install_github("Siliegia/SIGMA")
+devtools::install_github("Siliegia/SIGMA")
 ```
 
 ## Example
 
 This how you can use the functions in this R package. The most important one is sigma_funct, which calculates the clusterability per cluster. 
 
-```{r, echo = FALSE}
+```{r, eval = FALSE}
 library(SIGMA)
 library(splatter)
 library(ggplot2)
