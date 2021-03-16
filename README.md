@@ -40,7 +40,8 @@ test.cluster[test.cluster == "Group3"] <- "Group2"
 test.cluster[test.cluster == "Group4"] <- "Group2"
 
 #Main funcion that calculates the clusterability
-out <- sigma_funct(expr = expr.norm.log, clusters = test.cluster, exclude = data.frame(clsm = log(colSums(expr) + 1)))
+out <- sigma_funct(expr = expr.norm.log, clusters = test.cluster,
+                   exclude = data.frame(clsm = log(colSums(expr) + 1)))
 ```
 
 For ways to evaluate the results of this clusterability measure check
