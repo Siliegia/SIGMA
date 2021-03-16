@@ -41,17 +41,18 @@ plot_singular_vectors <- function(measure_obj, cluster, v1 = 1, v2 = 2, colour =
 
     v.plot$gene[v.plot$gene == 0] <- NA
 
-    p <- ggplot(v.plot, aes(x = v.plot$X1, y = v.plot$X2, colour = v.plot$gene)) + geom_point() + theme_light(base_size = 14) +
+    p <- ggplot(v.plot, aes(x = .data$X1, y = .data$X2, colour = .data$gene)) + geom_point() + theme_light(base_size = 14) +
       xlab(paste0("V", v1)) + ylab(paste0("V", v2)) +
       scale_color_gradientn(colours = c("navy", "yellow"),
                             na.value = rgb(0.75,0.75,0.75,alpha = 0.2), name = colour)
 
   }else if(length(colour) == nrow(v.plot)){
-    p <- ggplot(v.plot, aes(x = v.plot$X1, y = v.plot$X2, colour = v.plot$colour)) + geom_point() + theme_light(base_size = 14) +
+    v.plot$colour <- colour
+    p <- ggplot(v.plot, aes(x = .data$X1, y = .data$X2, colour = .data$colour)) + geom_point() + theme_light(base_size = 14) +
       xlab(paste0("V", v1)) + ylab(paste0("V", v2))
 
   }else if(length(colour) == 0){
-    p <- ggplot(v.plot, aes(x = v.plot$X1, y = v.plot$X2, colour = v.plot$colour)) + geom_point() + theme_light(base_size = 14) +
+    p <- ggplot(v.plot, aes(x = .data$X1, y = .data$X2)) + geom_point() + theme_light(base_size = 14) +
       xlab(paste0("V", v1)) + ylab(paste0("V", v2))
 
   }else{

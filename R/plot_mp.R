@@ -51,8 +51,8 @@ plot_MP <- function(measure_obj, cluster, plot.title = ""){
   plot.mp <- data.frame(val.mp=distr[1,])
   plot.mp$x <- n
 
-  p <- ggplot() + geom_histogram(data=plot.dat, aes(x = plot.dat$val, y=..density..), binwidth = max(singvals[-1])/150, fill = "skyblue") + theme_bw() +
-    geom_line(data=plot.mp, aes(x = plot.mp$x, y = plot.mp$val.mp), col = "tomato", size = 1, alpha = 0.8) + xlab("Singular Values") + ylab("Density")+
+  p <- ggplot() + geom_histogram(data=plot.dat, aes(x = .data$val, y=..density..), binwidth = max(singvals[-1])/150, fill = "skyblue") + theme_bw() +
+    geom_line(data=plot.mp, aes(x = .data$x, y = .data$val.mp), col = "tomato", size = 1, alpha = 0.8) + xlab("Singular Values") + ylab("Density")+
     theme(axis.text=element_text(size = 18), axis.title = element_text(size=16, face="bold"), legend.position = "right",
           legend.background = element_rect(fill = "transparent", size=0.7), legend.key = element_rect(fill = "transparent"))+
     scale_color_manual(guide = guide_legend(
@@ -71,7 +71,7 @@ plot_MP <- function(measure_obj, cluster, plot.title = ""){
     plot.sig.vec <- data.frame(sig = singvals[L$sig_vectors])
     plot.sig.vec$y <- 0.15
     plot.sig.vec$label <- "*"
-    p <- p + geom_text(data = plot.sig.vec, aes(x = plot.sig.vec$sig, y = plot.sig.vec$y, label = plot.sig.vec$label), size = 8)
+    p <- p + geom_text(data = plot.sig.vec, aes(x = .data$sig, y = .data$y, label = .data$label), size = 8)
   }
 
   print(p)

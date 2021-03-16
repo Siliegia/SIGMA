@@ -35,10 +35,10 @@ plot_all_sigmas <- function(measure_obj){
     cls <- c(cls(length(unique(measure_obj$all_info$singular_value))))
   }
 
-  p <- ggplot(measure_obj$all_info, aes(x = measure_obj$all_info$celltype, y = measure_obj$all_info$sigma, colour = measure_obj$all_info$singular_value)) +
+  p <- ggplot(measure_obj$all_info, aes(x = .data$celltype, y = .data$sigma, colour = .data$singular_value)) +
     geom_point(size = 2) + theme_light(base_size = 12) + xlab("") +
     ylab("SIGMA") + theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
-    scale_color_manual(values = cls)
+    scale_color_manual(values = cls) + guides(colour=guide_legend(title = "singular value"))
 
 
   print(p)

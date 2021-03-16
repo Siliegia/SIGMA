@@ -14,11 +14,15 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+First you need to load the package and ggplot2 for the plots. We use splatter here to construct a toy data set. 
+```{r setup, message=FALSE}
 library(SIGMA)
 library(splatter)
 library(ggplot2)
+```
 
+Here, we import splatter data from the package, called "splatO". And undergo the necessary processings steps for the measure. 
+```{r}
 #Load sample data simulated with splatter
 data("splatO")
 
@@ -35,32 +39,49 @@ test.cluster[test.cluster == "Group3"] <- "Group2"
 test.cluster[test.cluster == "Group4"] <- "Group2"
 ```
 
+Then, we are ready to run the main function for clusterability:
 ```{r}
 #Main funcion that calculates the clusterability
-out <- sigma_funct(expr = expr.norm.log, clusters = test.cluster, exclude = data.frame(clsm = log(colSums(expr) + 1)))
+out <- sigma_funct(expr = expr.norm.log, clusters = test.cluster, 
+                   exclude = data.frame(clsm = log(colSums(expr) + 1)))
 ```
 
-```{r}
+We can have a look at the main output of this function. For each cluster, the corresponding clusterability measure is shown. 
+```{r, fig.align = "center", fig.height = 5, fig.width = 8}
 #Evaluate the output of the measure
 
 #plot all values for sigma
 plot_sigma(out)
+```
 
+If you would like to go into more detail, then you can have a look at all sigmas and g-sigmas that are available per cluster. 
+```{r, fig.align = "center", fig.height = 5, fig.width = 8}
 #Plot all values for sigma and g_sigma
 plot_all_sigmas(out)
 plot_all_g_sigmas(out)
 
+```
+
+If you are interested in the values of all sigmas, g-sigmas, singular values of the signal matrix, then this information can be obtained with the help of this function. 
+```{r}
 #obtain the values for sigma and additional information
 get_info(out, "Group2")
+```
 
+Now, to determine if the clustrs with a high clusterability measure have variances that are meaningful for yyou to sub-cluster, have a look at the variance driving genes, which will tell you which genes cause the signal to appear. For example, if genes are only related to differentiation, then sub-clustering might not be necessary but could be of interest.
+```{r}
 #See which genes cause variances in the data
 get_var_genes(out, "Group2")
+```
 
+You can also check out the fit of the MP distribution for each cluster. 
+```{r, fig.align = "center", fig.height = 5, fig.width = 8}
 #Check if the MP distribution fits to the data
 plot_MP(out, "Group2")
+```
 
-#Check-out the singular vectors to evaluate the variances that are significant 
-
+And for fruther validation, see if the singular vectors of the significant singular values look meaningful. By plotting either clusters or genes with the singular vectors. 
+```{r, fig.align = "center", fig.height = 5, fig.width = 8}
 #Plot clusters
 plot_singular_vectors(out, "Group2", colour = splatO$Group[test.cluster == "Group2"])
 
