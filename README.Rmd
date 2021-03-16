@@ -14,7 +14,7 @@ A package to calculate clusterability in clusters of scRNA-seq data. By applying
 ## Installation
 ```{r}
 # install.packages("devtools")
-devtools::install_github("Siliegia/SIGMA")
+#devtools::install_github("Siliegia/SIGMA")
 ```
 
 ## Example
