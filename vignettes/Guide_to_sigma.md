@@ -59,7 +59,7 @@ cluster, the corresponding clusterability measure is shown.
 plot_sigma(out)
 ```
 
-<img src="Guide_to_sigma_files/figure-markdown_github/unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
+<img src="Guide_to_sigma_files/figure-markdown_github/unnamed-chunk-4-1.png" style="display: block; margin: auto;" />
 
 If you would like to go into more detail, then you can have a look at
 all sigmas and g-sigmas that are available per cluster.
@@ -69,15 +69,15 @@ all sigmas and g-sigmas that are available per cluster.
 plot_all_sigmas(out)
 ```
 
-<img src="Guide_to_sigma_files/figure-markdown_github/unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
+<img src="Guide_to_sigma_files/figure-markdown_github/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
 
 ``` r
 plot_all_g_sigmas(out)
 ```
 
-<img src="Guide_to_sigma_files/figure-markdown_github/unnamed-chunk-13-2.png" style="display: block; margin: auto;" />
+<img src="Guide_to_sigma_files/figure-markdown_github/unnamed-chunk-5-2.png" style="display: block; margin: auto;" />
 
-If you are interested in the values of all sigmas, g-sigmas, singular
+If you are interested in the values of all sigmas, g-sigmas and singular
 values of the signal matrix, then this information can be obtained with
 the help of this function.
 
@@ -90,11 +90,10 @@ get_info(out, "Group2")
 ```
 
 Now, to determine if the clustrs with a high clusterability measure have
-variances that are meaningful for yyou to sub-cluster, have a look at
-the variance driving genes, which will tell you which genes cause the
-signal to appear. For example, if genes are only related to
-differentiation, then sub-clustering might not be necessary but could be
-of interest.
+variances that are meaningful for you to sub-cluster, have a look at the
+variance driving genes, which will tell you which genes cause the signal
+to appear. For example, if genes are only related to differentiation,
+then sub-clustering might not be necessary but could be of interest.
 
 ``` r
 #See which genes cause variances in the data
@@ -125,9 +124,9 @@ You can also check out the fit of the MP distribution for each cluster.
 plot_MP(out, "Group2")
 ```
 
-<img src="Guide_to_sigma_files/figure-markdown_github/unnamed-chunk-16-1.png" style="display: block; margin: auto;" />
+<img src="Guide_to_sigma_files/figure-markdown_github/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
 
-And for fruther validation, see if the singular vectors of the
+And for further validation, see if the singular vectors of the
 significant singular values look meaningful. By plotting either clusters
 or genes with the singular vectors.
 
@@ -136,7 +135,7 @@ or genes with the singular vectors.
 plot_singular_vectors(out, "Group2", colour = splatO$Group[test.cluster == "Group2"])
 ```
 
-<img src="Guide_to_sigma_files/figure-markdown_github/unnamed-chunk-17-1.png" style="display: block; margin: auto;" />
+<img src="Guide_to_sigma_files/figure-markdown_github/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
 
 ``` r
 
@@ -144,4 +143,4 @@ plot_singular_vectors(out, "Group2", colour = splatO$Group[test.cluster == "Grou
 plot_singular_vectors(out, "Group2", colour = "Gene401")
 ```
 
-<img src="Guide_to_sigma_files/figure-markdown_github/unnamed-chunk-17-2.png" style="display: block; margin: auto;" />
+<img src="Guide_to_sigma_files/figure-markdown_github/unnamed-chunk-9-2.png" style="display: block; margin: auto;" />

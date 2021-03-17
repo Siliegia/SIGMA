@@ -62,13 +62,13 @@ plot_all_g_sigmas(out)
 
 ```
 
-If you are interested in the values of all sigmas, g-sigmas, singular values of the signal matrix, then this information can be obtained with the help of this function. 
+If you are interested in the values of all sigmas, g-sigmas and singular values of the signal matrix, then this information can be obtained with the help of this function. 
 ```{r}
 #obtain the values for sigma and additional information
 get_info(out, "Group2")
 ```
 
-Now, to determine if the clustrs with a high clusterability measure have variances that are meaningful for yyou to sub-cluster, have a look at the variance driving genes, which will tell you which genes cause the signal to appear. For example, if genes are only related to differentiation, then sub-clustering might not be necessary but could be of interest.
+Now, to determine if the clustrs with a high clusterability measure have variances that are meaningful for you to sub-cluster, have a look at the variance driving genes, which will tell you which genes cause the signal to appear. For example, if genes are only related to differentiation, then sub-clustering might not be necessary but could be of interest.
 ```{r}
 #See which genes cause variances in the data
 get_var_genes(out, "Group2")
@@ -80,7 +80,7 @@ You can also check out the fit of the MP distribution for each cluster.
 plot_MP(out, "Group2")
 ```
 
-And for fruther validation, see if the singular vectors of the significant singular values look meaningful. By plotting either clusters or genes with the singular vectors. 
+And for further validation, see if the singular vectors of the significant singular values look meaningful. By plotting either clusters or genes with the singular vectors. 
 ```{r, fig.align = "center", fig.height = 5, fig.width = 8}
 #Plot clusters
 plot_singular_vectors(out, "Group2", colour = splatO$Group[test.cluster == "Group2"])
