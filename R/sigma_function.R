@@ -147,6 +147,8 @@ sigma_funct <- function(expr, clusters, exclude = NULL, exp_genes = 0.01, exclud
           r2vals <- rep(0, length(L$sig_vectors))
         }
 
+        r2vals[r2vals < 0] <- 0
+
         #Adjustements
         perc.lambda <- (1 - r2vals)*(L$eigen$values[L$sig_vectors])
         perc.sigma <- sqrt(perc.lambda*(L$M - 1))
