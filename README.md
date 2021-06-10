@@ -3,7 +3,7 @@ SIGMA: A clusterability measure for scRNA-seq data
 
 A package to calculate clusterability in clusters of scRNA-seq data. By
 applying this measure you can assess if meaningful variability is left
-in clusters.
+in clusters. The corresponding paper can be found here [A clusterability measure for single-cell transcriptomics reveals phenotypic subpopulations](https://www.biorxiv.org/content/10.1101/2021.05.11.443685v1)
 
 Installation
 ------------
@@ -45,4 +45,4 @@ out <- sigma_funct(expr = expr.norm.log, clusters = test.cluster,
 ```
 
 For ways to evaluate the results of this clusterability measure check
-out the vignette Guide\_to\_sigma.
+out the vignette [Guide\_to\_sigma](https://github.com/Siliegia/SIGMA/blob/master/vignettes/Guide_to_sigma.md) and for a real scRNA-seq example you can have a look at our analysis of a fetal kidney [Analysis_kidney](https://github.com/Siliegia/SIGMA/blob/master/vignettes/Analysis_kidney.md).
