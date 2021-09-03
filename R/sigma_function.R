@@ -52,6 +52,8 @@ sigma_funct <- function(expr, clusters, exclude = NULL, exp_genes = 0.01, exclud
   uclt <- unique(celltype)
 
   thetas.add <- list()
+  lambdas.add <- list()
+  lambdas.corr <- list()
   angles.add <- list()
   angles.add2 <- list()
   angles.add_u <- list()
@@ -158,6 +160,12 @@ sigma_funct <- function(expr, clusters, exclude = NULL, exp_genes = 0.01, exclud
         names(all_r2vals[[uclt[i]]]) <- L$sig_vectors
         thetas.add[[uclt[i]]] <- obtain_theta_sv(lambda = perc.sigma/sqrt(L$M-1), L = L)
         names(thetas.add[[uclt[i]]]) <- L$sig_vectors
+
+        lambdas.add[[uclt[i]]] <- L$svd$d[L$sig_vectors]/sqrt(L$M-1)
+        names(lambdas.add[[uclt[i]]]) <- L$sig_vectors
+        lambdas.corr[[uclt[i]]] <- perc.sigma/sqrt(L$M-1)
+        names(lambdas.corr[[uclt[i]]]) <- L$sig_vectors
+
         angles.add[[uclt[i]]] <- vec_norm_sv(theta = thetas.add[[uclt[i]]], L = L)
         names(angles.add[[uclt[i]]]) <- L$sig_vectors
         angles.add_u[[uclt[i]]] <- vec_norm_sv_u(theta = thetas.add[[uclt[i]]], L = L)
@@ -170,6 +178,12 @@ sigma_funct <- function(expr, clusters, exclude = NULL, exp_genes = 0.01, exclud
         names(all_r2vals[[uclt[i]]]) <- 0
         thetas.add[[uclt[i]]] <- 0
         names(thetas.add[[uclt[i]]]) <- 0
+
+        lambdas.add[[uclt[i]]] <- 0
+        names(lambdas.add[[uclt[i]]]) <- 0
+        lambdas.corr[[uclt[i]]] <- 0
+        names(lambdas.corr[[uclt[i]]]) <- 0
+
         angles.add[[uclt[i]]] <- 0
         names(angles.add[[uclt[i]]]) <-0
         angles.add_u[[uclt[i]]] <- 0
@@ -182,7 +196,8 @@ sigma_funct <- function(expr, clusters, exclude = NULL, exp_genes = 0.01, exclud
   }
 
   maximum_measure <- unlist(lapply(angles.add, max))
-  all_info <- data.frame(sigma = unlist(angles.add), g_sigma = unlist(angles.add_u), theta = unlist(thetas.add), r2vals = unlist(all_r2vals))
+  all_info <- data.frame(sigma = unlist(angles.add), g_sigma = unlist(angles.add_u), lambda = unlist(lambdas.add),
+                         r2vals = unlist(all_r2vals), lambda_corrected = unlist(lambdas.corr), theta = unlist(thetas.add))
   all_info$singular_value <- unlist(lapply(angles.add, names))
   all_info$celltype <- rep(names(angles.add), lengths(angles.add))
   rownames(all_info) <- NULL
