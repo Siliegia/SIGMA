@@ -18,12 +18,14 @@
 #' \item N: the number of cells
 #' \item svd: the singular value decomposition
 #' \item genes.used: genes that have been used for the calculation of the MP distribution
+#' \item p.value_mp_fit: p-value for the similarity of a MP distribution to the eigenvalues found as noise
 #' \item transcriptome_mode: the index of the transcriptome mode
 #' \item input_parameters: the inputs to the function
 #' }
 #'
-#' @importFrom stats quantile shapiro.test cor
+#' @importFrom stats quantile shapiro.test cor ks.test
 #' @importFrom utils tail
+#' @importFrom RMTstat rmp
 #'
 #' @examples
 #' library(splatter)
@@ -170,9 +172,13 @@ fit_mp <- function(expr, sample = FALSE, cor = TRUE, nu = 50, p.val = 0.01){
 
   Dg <- diag(dg, nrow = N, ncol = N)
 
+  r2 <- s$values[s$values >= RMTminEig & s$values <= RMTmaxEig]
+  r <- rmp(length(r2), ndf = M, pdim = N)
+
+  p.val.mp <- ks.test(r, r2)$p.value
 
   out <- list(eigen = s, maxEigen = RMTmaxEig, minEigen = RMTminEig, sig_vectors = (N - c(rmt_indices[passed_test], sig_vectors)+1), M = M,
-              N = N, svd = svd.expr, genes.used = rownames(expr),
+              N = N, svd = svd.expr, genes.used = rownames(expr), p.value_mp_fit = p.val.mp,
               transcriptome_mode = N - transcriptome_mode + 1, input_parameters = list(sample = sample, cor = cor, expr = expr))
   return(out)
 }

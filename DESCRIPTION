@@ -18,7 +18,8 @@ Imports:
     ggplot2 (>= 3.3),
     grDevices (>= 3.6),
     S4Vectors (>= 0.24.4),
-    Seurat (>= 3.9)
+    Seurat (>= 3.9),
+    RMTstat (>= 0.3)
 Depends:
     R (>= 3.6)
 Suggests: 

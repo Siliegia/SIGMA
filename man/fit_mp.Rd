@@ -28,6 +28,7 @@ A MP object:
 \item N: the number of cells
 \item svd: the singular value decomposition
 \item genes.used: genes that have been used for the calculation of the MP distribution
+\item p.value_mp_fit: p-value for the similarity of a MP distribution to the eigenvalues found as noise
 \item transcriptome_mode: the index of the transcriptome mode
 \item input_parameters: the inputs to the function
 }
