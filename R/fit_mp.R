@@ -173,14 +173,9 @@ fit_mp <- function(expr, sample = FALSE, cor = TRUE, nu = 50, p.val = 0.01){
   Dg <- diag(dg, nrow = N, ncol = N)
 
   r2 <- s$values[s$values >= RMTminEig & s$values <= RMTmaxEig]
+  r <- rmp(1000, ndf = M, pdim = N)
 
-  r.out <- unlist(lapply(1:25, function(x){
-    set.seed(x)
-    r <- rmp(1000, ndf = M, pdim = N)
-    p.val.mp <- ks.test(r, r2)$p.value
-    }))
-
-  p.val.mp <- mean(r.out)
+  p.val.mp <- ks.test(r, r2)$p.value
 
   out <- list(eigen = s, maxEigen = RMTmaxEig, minEigen = RMTminEig, sig_vectors = (N - c(rmt_indices[passed_test], sig_vectors)+1), M = M,
               N = N, svd = svd.expr, genes.used = rownames(expr), p.value_mp_fit = p.val.mp,
