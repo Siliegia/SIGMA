@@ -67,7 +67,7 @@ fit_mp <- function(expr, sample = FALSE, cor = TRUE, nu = 50, p.val = 0.01){
   V <- s$vectors[,ind]
 
   sigma <- 1 - (max(s$values)/sum(s$values))
-  cat("Scaled by: ", sigma, "\n")
+  #cat("Scaled by: ", sigma, "\n")
 
   Q <- M/N
 
@@ -173,7 +173,7 @@ fit_mp <- function(expr, sample = FALSE, cor = TRUE, nu = 50, p.val = 0.01){
   Dg <- diag(dg, nrow = N, ncol = N)
 
   r2 <- s$values[s$values >= RMTminEig & s$values <= RMTmaxEig]
-  r <- rmp(2000, ndf = M, pdim = N)
+  r <- sigma*rmp(1000, ndf = M, pdim = N)
 
   p.val.mp <- ks.test(r, r2)$p.value
 
