@@ -10,6 +10,7 @@
 #' @param exclude_outlier_cells TRUE/FALSE if outlier cells should be excluded, default is FALSE (this functions is not fully tested)
 #' @param outlier_value cutoff for outlier cells
 #' @param p.val the p-value to be used in the test of normality for the singular vectors, default is 0.01
+#' @param nu number of left singular vectors to calculate, default is 50. High values increase computational time.
 #'
 #' @return A measure object:
 #' \itemize{
@@ -21,7 +22,7 @@
 #' \item input_parameters: the inputs to the function
 #' }
 #'
-#' @importFrom stats median mad lm
+#' @importFrom stats median mad lm p.adjust
 #'
 #' @examples
 #' #Load sample data simulated with splatter
@@ -46,7 +47,7 @@
 #' @export
 
 
-sigma_funct <- function(expr, clusters, exclude = NULL, exp_genes = 0.01, exclude_outlier_cells = F, outlier_value = 10, p.val = 0.01){
+sigma_funct <- function(expr, clusters, exclude = NULL, exp_genes = 0.01, exclude_outlier_cells = F, outlier_value = 10, p.val = 0.01, nu = 50){
 
   celltype <- as.character(clusters)
   uclt <- unique(celltype)
@@ -107,9 +108,9 @@ sigma_funct <- function(expr, clusters, exclude = NULL, exp_genes = 0.01, exclud
       cat("Dim: ",dim(data.small.scale), "\n")
 
       if(ncol(data.small.scale) >= 50){
-        L <- fit_mp(expr = data.small.scale, sample = FALSE, cor = T, p.val = p.val)
+        L <- fit_mp(expr = data.small.scale, sample = FALSE, cor = T, p.val = p.val, nu = nu)
       }else{
-        L <- fit_mp(expr = data.small.scale, sample = TRUE, cor = T, p.val = p.val)
+        L <- fit_mp(expr = data.small.scale, sample = TRUE, cor = T, p.val = p.val, nu = nu)
       }
 
       rmt.list[[uclt[i]]] <- L
@@ -195,6 +196,14 @@ sigma_funct <- function(expr, clusters, exclude = NULL, exp_genes = 0.01, exclud
 
   }
 
+  pvals.mp <- c()
+  u.cl <- unique(clusters)
+  for(i in u.cl){
+    pvals.mp <- c(pvals.mp, rmt.list[[i]]$p.value_mp_fit)
+  }
+  names(pvals.mp) <- u.cl
+  pvals.mp <- p.adjust(pvals.mp, "hochberg")
+
   maximum_measure <- unlist(lapply(angles.add, max))
   all_info <- data.frame(sigma = unlist(angles.add), g_sigma = unlist(angles.add_u), lambda = unlist(lambdas.add),
                          r2vals = unlist(all_r2vals), lambda_corrected = unlist(lambdas.corr), theta = unlist(thetas.add))
@@ -202,7 +211,7 @@ sigma_funct <- function(expr, clusters, exclude = NULL, exp_genes = 0.01, exclud
   all_info$celltype <- rep(names(angles.add), lengths(angles.add))
   rownames(all_info) <- NULL
 
-  return(list(maximum_measure = maximum_measure, all_info = all_info, genes = gene.list, rmt_out = rmt.list, cell.index = cell.index,
+  return(list(maximum_measure = maximum_measure, all_info = all_info, genes = gene.list, rmt_out = rmt.list, cell.index = cell.index, p.val.mp.fit = pvals.mp,
               input_parameters = list(expr = expr, clusters = clusters, exclude = exclude)))
 }
 

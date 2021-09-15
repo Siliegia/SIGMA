@@ -89,61 +89,36 @@ fit_mp <- function(expr, sample = FALSE, cor = TRUE, nu = 50, p.val = 0.01){
   RMTminIndex <- which(eigvals < RMTminEig)
   RMTminIndex <- tail(RMTminIndex, 1)
 
+  #Calculating p-value
+  r2 <- s$values[s$values >= RMTminEig & s$values <= RMTmaxEig]
+  r <- sigma*rmp(1000, ndf = M, pdim = N)
+  p.val.mp <- ks.test(r, r2)$p.value
+
+  #Calculating transcriptome mode
+  transcriptome_mode <- which(colSums(V>0) == 0 | colSums(V<0) == 0)
+  cat("Market Mode: ", N + 1 - transcriptome_mode, "\n")
 
   #Critical eigenvalue
   RMTmaxIndex <- which(eigvals > tw)
 
   if (isEmpty(RMTmaxIndex)){
 
-    out <- list(cleanedCorrelation = "All values correspond to noise", eigen = s, svd = svd.expr, maxEigen = RMTmaxEig, minEigen = RMTminEig,
-                M = M, N = N, sig_vectors = c())
+    out <- list(eigen = s, maxEigen = RMTmaxEig, minEigen = RMTminEig, sig_vectors = c(),
+                M = M, N = N, svd = svd.expr, genes.used = rownames(expr), p.value_mp_fit = p.val.mp, transcriptome_mode = transcriptome_mode,
+                input_parameters = list(sample = sample, cor = cor, expr = expr))
     return(out)
 
   }else{
     RMTmaxIndex <- RMTmaxIndex[1]}
 
-  #Give all the eigenvalue the same value
-  avgEigenValue <- mean(eigvals[1:(RMTmaxIndex-1)])
-  dg <- rep(avgEigenValue, N)
 
   #Check loacalisation of eigenvectors above Marchenko-Pastur
-
-  if(sum(colSums(V>0) == 0 | colSums(V<0) == 0)>0){
-    transcriptome_mode <- which(colSums(V>0) == 0 | colSums(V<0) == 0)
-    cat("Market Mode: ", N + 1 - transcriptome_mode, "\n")
-
-    if(transcriptome_mode > RMTmaxIndex){
-
-      if(length(V[,transcriptome_mode]) > 5000){
-        p.val.mm <- shapiro.test(V[sample(1:nrow(V), size = 5000),transcriptome_mode])$p.value
-      }else{
-        p.val.mm <- shapiro.test(V[,transcriptome_mode])$p.value
-      }
-
-      if(p.val.mm < 1){  #p.val.thres
-        dg[transcriptome_mode] <- 0 #eigvals[transcriptome_mode]
-        sig_vectors <- c(transcriptome_mode)
-      }else{
-        dg[transcriptome_mode] <- 0
-        sig_vectors <- c()
-      }
-
-    }else{
-      sig_vectors <- c()
-      transcriptome_mode <- transcriptome_mode
-    }
-
-  }else{
-    sig_vectors <- c()
-    transcriptome_mode <- 0
-  }
-
-  to.test <- (length(dg)):RMTmaxIndex
-  to.test <- setdiff(to.test, transcriptome_mode)
+  to.test <- N:RMTmaxIndex
 
   if(isEmpty(to.test)){
-    out <- list(cleanedCorrelation = "All values correspond to noise", eigen = s, svd = svd.expr, maxEigen = RMTmaxEig, minEigen = RMTminEig, M = M,
-                N = N, sig_vectors = c())
+    out <- list(eigen = s, maxEigen = RMTmaxEig, minEigen = RMTminEig, sig_vectors = c(),
+                M = M, N = N, svd = svd.expr, genes.used = rownames(expr), p.value_mp_fit = p.val.mp, transcriptome_mode = transcriptome_mode,
+                input_parameters = list(sample = sample, cor = cor, expr = expr))
     return(out)
   }
 
@@ -170,14 +145,7 @@ fit_mp <- function(expr, sample = FALSE, cor = TRUE, nu = 50, p.val = 0.01){
   }
 
 
-  Dg <- diag(dg, nrow = N, ncol = N)
-
-  r2 <- s$values[s$values >= RMTminEig & s$values <= RMTmaxEig]
-  r <- sigma*rmp(1000, ndf = M, pdim = N)
-
-  p.val.mp <- ks.test(r, r2)$p.value
-
-  out <- list(eigen = s, maxEigen = RMTmaxEig, minEigen = RMTminEig, sig_vectors = (N - c(rmt_indices[passed_test], sig_vectors)+1), M = M,
+  out <- list(eigen = s, maxEigen = RMTmaxEig, minEigen = RMTminEig, sig_vectors = (N - c(rmt_indices[passed_test])+1), M = M,
               N = N, svd = svd.expr, genes.used = rownames(expr), p.value_mp_fit = p.val.mp,
               transcriptome_mode = N - transcriptome_mode + 1, input_parameters = list(sample = sample, cor = cor, expr = expr))
   return(out)

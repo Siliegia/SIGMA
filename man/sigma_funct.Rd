@@ -11,7 +11,8 @@ sigma_funct(
   exp_genes = 0.01,
   exclude_outlier_cells = F,
   outlier_value = 10,
-  p.val = 0.01
+  p.val = 0.01,
+  nu = 50
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ The data frame should have the same number of rows as cells (also in the same or
 \item{outlier_value}{cutoff for outlier cells}
 
 \item{p.val}{the p-value to be used in the test of normality for the singular vectors, default is 0.01}
+
+\item{nu}{number of left singular vectors to calculate, default is 50. High values increase computational time.}
 }
 \value{
 A measure object:
