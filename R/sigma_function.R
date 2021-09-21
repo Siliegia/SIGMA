@@ -115,7 +115,7 @@ sigma_funct <- function(expr, clusters, exclude = NULL, exp_genes = 0.01, exclud
 
       rmt.list[[uclt[i]]] <- L
 
-      nn <- round((exp_genes)*nrow(data.small.scale))
+      nn <- max(round((exp_genes)*nrow(data.small.scale)), 10)
 
       if(length(L$sig_vectors) > 0){
 
