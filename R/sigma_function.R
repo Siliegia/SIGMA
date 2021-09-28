@@ -6,6 +6,7 @@
 #' @param clusters a vector of the same length as the number of cells, indicating which cell type they belong to
 #' @param exclude a data.frame of variables to reduce in the measure, e.g. total number of transcripts, average expression of MT, Rb or stress genes.
 #'  The data frame should have the same number of rows as cells (also in the same order), and each column corresponds to a different variable.
+#' @param confidence should the confidence interval for SIGMA be calculated. Caution: Increases computational time significantly.
 #' @param exp_genes percentage of variance driving genes to extract per sigificant singular vector
 #' @param exclude_outlier_cells TRUE/FALSE if outlier cells should be excluded, default is FALSE (this functions is not fully tested)
 #' @param outlier_value cutoff for outlier cells
@@ -22,7 +23,8 @@
 #' \item input_parameters: the inputs to the function
 #' }
 #'
-#' @importFrom stats median mad lm p.adjust
+#' @importFrom stats median mad lm p.adjust rnorm
+#' @importFrom parallel mclapply
 #'
 #' @examples
 #' #Load sample data simulated with splatter
@@ -47,7 +49,7 @@
 #' @export
 
 
-sigma_funct <- function(expr, clusters, exclude = NULL, exp_genes = 0.01, exclude_outlier_cells = F, outlier_value = 10, p.val = 0.01, nu = 50){
+sigma_funct <- function(expr, clusters, exclude = NULL, confidence = F, exp_genes = 0.01, exclude_outlier_cells = F, outlier_value = 10, p.val = 0.01, nu = 50){
 
   celltype <- as.character(clusters)
   uclt <- unique(celltype)
@@ -171,6 +173,29 @@ sigma_funct <- function(expr, clusters, exclude = NULL, exp_genes = 0.01, exclud
         names(angles.add[[uclt[i]]]) <- L$sig_vectors
         angles.add_u[[uclt[i]]] <- vec_norm_sv_u(theta = thetas.add[[uclt[i]]], L = L)
         names(angles.add_u[[uclt[i]]]) <- L$sig_vectors
+
+        #Calculating confidence intervals
+        if(confidence){
+          sig.ind <- L$sig_vectors
+          s.signal <- L$svd$u[,sig.ind]%*%diag(sqrt(L$M - 1)*thetas.add[[uclt[i]]], nrow = length(L$sig_vectors), ncol = length(L$sig_vectors))%*%t(L$svd$v[,sig.ind])
+
+          conf.out <- unlist(mclapply(1:50, function(x){
+            set.seed(x)
+            mat.nois <- matrix(rnorm(L$M*L$N, mean = 0, sd = 1), ncol = L$N)
+            new_mat <- mat.nois + s.signal
+            L2 <- svd(new_mat, nu = 0, nv = 0)
+
+            return(max(L2$d/sqrt(L$M - 1)))
+          }))
+
+          thetas.conf <- obtain_theta_sv(lambda = conf.out, L = L)
+          vec.conf <- vec_norm_sv(theta = thetas.conf, L = L)
+          up.ind <- vec.conf >= max(angles.add[[uclt[i]]])
+
+          sd.up[[uclt[i]]] <- sqrt((1/(sum(up.ind) - 1))*sum((vec.conf[up.ind] - max(angles.add[[uclt[i]]]))^2))
+          sd.down[[uclt[i]]] <- sqrt((1/(sum(!up.ind) - 1))*sum((vec.conf[!up.ind] - max(angles.add[[uclt[i]]]))^2))
+        }
+
       }else{
         gene.list[[uclt[i]]] <- "No further clusters"
 
@@ -189,6 +214,12 @@ sigma_funct <- function(expr, clusters, exclude = NULL, exp_genes = 0.01, exclud
         names(angles.add[[uclt[i]]]) <-0
         angles.add_u[[uclt[i]]] <- 0
         names(angles.add_u[[uclt[i]]]) <- 0
+
+        if(confidence){
+          sd.up[[uclt[i]]] <- 0
+          sd.down[[uclt[i]]] <- 0
+        }
+
       }
 
 
@@ -204,7 +235,13 @@ sigma_funct <- function(expr, clusters, exclude = NULL, exp_genes = 0.01, exclud
   names(pvals.mp) <- u.cl
   pvals.mp <- p.adjust(pvals.mp, "hochberg")
 
-  maximum_measure <- unlist(lapply(angles.add, max))
+  if(confidence){
+    maximum_measure <- data.frame( EV = unlist(lapply(angles.add, max)), upper = unlist(lapply(angles.add, max)) + unlist(sd.up),
+                                   lower = unlist(lapply(angles.add, max)) - unlist(sd.down))
+  }else{
+    maximum_measure <- unlist(lapply(angles.add, max))
+  }
+
   all_info <- data.frame(sigma = unlist(angles.add), g_sigma = unlist(angles.add_u), lambda = unlist(lambdas.add),
                          r2vals = unlist(all_r2vals), lambda_corrected = unlist(lambdas.corr), theta = unlist(thetas.add))
   all_info$singular_value <- unlist(lapply(angles.add, names))

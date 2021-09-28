@@ -19,7 +19,8 @@ Imports:
     grDevices (>= 3.6),
     S4Vectors (>= 0.24.4),
     Seurat (>= 3.9),
-    RMTstat (>= 0.3)
+    RMTstat (>= 0.3),
+    parallel (>= 3.6)
 Depends:
     R (>= 3.6)
 Suggests: 

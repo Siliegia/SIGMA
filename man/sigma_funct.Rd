@@ -8,6 +8,7 @@ sigma_funct(
   expr,
   clusters,
   exclude = NULL,
+  confidence = F,
   exp_genes = 0.01,
   exclude_outlier_cells = F,
   outlier_value = 10,
@@ -22,6 +23,8 @@ sigma_funct(
 
 \item{exclude}{a data.frame of variables to reduce in the measure, e.g. total number of transcripts, average expression of MT, Rb or stress genes.
 The data frame should have the same number of rows as cells (also in the same order), and each column corresponds to a different variable.}
+
+\item{confidence}{should the confidence interval for SIGMA be calculated. Caution: Increases computational time significantly.}
 
 \item{exp_genes}{percentage of variance driving genes to extract per sigificant singular vector}
 
