@@ -62,6 +62,8 @@ sigma_funct <- function(expr, clusters, exclude = NULL, confidence = F, exp_gene
   angles.add_u <- list()
   all_r2vals <- list()
   gene.list <- list()
+  sd.up <- list()
+  sd.down <- list()
 
   rmt.list <- list()
   cell.index <- list()
