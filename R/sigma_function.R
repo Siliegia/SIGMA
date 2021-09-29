@@ -326,7 +326,7 @@ obtain_theta_sv <- function(lambda, L){
     if(abs(lambda[i]) > bb){
       v <- c( v, sqrt(2*Q/( lambda[i]^2 - (Q+1) - sqrt( (lambda[i]^2 - (Q+1))^2 - 4*Q ) )) )
     }else{
-      v <- c(v, Q^(1/4))
+      v <- c(v, 0)
     }
   }
 
