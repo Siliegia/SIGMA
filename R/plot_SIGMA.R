@@ -17,8 +17,8 @@
 
 plot_sigma <- function(measure_obj){
 
-  if(is.data.frame(measure_obj$maximum_measure)){
-    m.plot <- measure_obj$maximum_measure
+  if(is.data.frame(measure_obj$sigma)){
+    m.plot <- measure_obj$sigma
     m.plot$celltype = rownames(m.plot)
 
     m.plot$celltype <- factor(m.plot$celltype, levels = m.plot$celltype[order(m.plot$EV)])
@@ -29,7 +29,7 @@ plot_sigma <- function(measure_obj){
 
     print(p)
   }else{
-    m.plot <- data.frame(celltype = names(measure_obj$maximum_measure), values = measure_obj$maximum_measure)
+    m.plot <- data.frame(celltype = names(measure_obj$sigma), values = measure_obj$sigma)
     m.plot$celltype <- factor(m.plot$celltype, levels = m.plot$celltype[order(m.plot$values)])
 
     p <- ggplot(m.plot, aes(x = .data$celltype, y = .data$values, colour = .data$celltype)) + geom_point(size = 2) + theme_light(base_size = 12) + xlab("") +

@@ -24,7 +24,7 @@ sigma_funct(
 \item{exclude}{a data.frame of variables to reduce in the measure, e.g. total number of transcripts, average expression of MT, Rb or stress genes.
 The data frame should have the same number of rows as cells (also in the same order), and each column corresponds to a different variable.}
 
-\item{confidence}{should the confidence interval for SIGMA be calculated. Caution: Increases computational time significantly.}
+\item{confidence}{TRUE/FALSE if the confidence interval for SIGMA should be calculated. Caution: Increases computational time significantly.}
 
 \item{exp_genes}{percentage of variance driving genes to extract per sigificant singular vector}
 
@@ -39,7 +39,8 @@ The data frame should have the same number of rows as cells (also in the same or
 \value{
 A measure object:
 \itemize{
-\item maximum_measure: sigma for each cluster
+\item sigma: sigma for each cluster
+\item g_sigma: g-sigma for each cluster
 \item all_info: detailed information about each singular value (see function get_info)
 \item genes: list of variance driving genes (see function get_var_genes)
 \item rmt_out: MP object for each cluster (see function fit_mp)

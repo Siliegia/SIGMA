@@ -25,7 +25,7 @@ plot_all_sigmas <- function(measure_obj){
   }
 
   measure_obj$all_info$singular_value <- factor(measure_obj$all_info$singular_value, levels = lvls)
-  measure_obj$all_info$celltype <- factor(measure_obj$all_info$celltype, levels = names(measure_obj$maximum_measure)[order(measure_obj$maximum_measure)])
+  measure_obj$all_info$celltype <- factor(measure_obj$all_info$celltype, levels = names(measure_obj$sigma)[order(measure_obj$sigma)])
 
   cls <- colorRampPalette(c("orchid2", "steelblue1", "olivedrab2", "tomato"))
 

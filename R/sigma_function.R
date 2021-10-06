@@ -6,7 +6,7 @@
 #' @param clusters a vector of the same length as the number of cells, indicating which cell type they belong to
 #' @param exclude a data.frame of variables to reduce in the measure, e.g. total number of transcripts, average expression of MT, Rb or stress genes.
 #'  The data frame should have the same number of rows as cells (also in the same order), and each column corresponds to a different variable.
-#' @param confidence should the confidence interval for SIGMA be calculated. Caution: Increases computational time significantly.
+#' @param confidence TRUE/FALSE if the confidence interval for SIGMA should be calculated. Caution: Increases computational time significantly.
 #' @param exp_genes percentage of variance driving genes to extract per sigificant singular vector
 #' @param exclude_outlier_cells TRUE/FALSE if outlier cells should be excluded, default is FALSE (this functions is not fully tested)
 #' @param outlier_value cutoff for outlier cells
@@ -15,7 +15,8 @@
 #'
 #' @return A measure object:
 #' \itemize{
-#' \item maximum_measure: sigma for each cluster
+#' \item sigma: sigma for each cluster
+#' \item g_sigma: g-sigma for each cluster
 #' \item all_info: detailed information about each singular value (see function get_info)
 #' \item genes: list of variance driving genes (see function get_var_genes)
 #' \item rmt_out: MP object for each cluster (see function fit_mp)
@@ -64,6 +65,8 @@ sigma_funct <- function(expr, clusters, exclude = NULL, confidence = F, exp_gene
   gene.list <- list()
   sd.up <- list()
   sd.down <- list()
+  sd.up.u <- list()
+  sd.down.u <- list()
 
   rmt.list <- list()
   cell.index <- list()
@@ -196,6 +199,13 @@ sigma_funct <- function(expr, clusters, exclude = NULL, confidence = F, exp_gene
 
           sd.up[[uclt[i]]] <- sqrt((1/(sum(up.ind) - 1))*sum((vec.conf[up.ind] - max(angles.add[[uclt[i]]]))^2))
           sd.down[[uclt[i]]] <- sqrt((1/(sum(!up.ind) - 1))*sum((vec.conf[!up.ind] - max(angles.add[[uclt[i]]]))^2))
+
+          #For g-sigma
+          vec.conf.u <- vec_norm_sv_u(theta = thetas.conf, L = L)
+          up.ind <- vec.conf.u >= max(angles.add_u[[uclt[i]]])
+
+          sd.up.u[[uclt[i]]] <- sqrt((1/(sum(up.ind) - 1))*sum((vec.conf.u[up.ind] - max(angles.add_u[[uclt[i]]]))^2))
+          sd.down.u[[uclt[i]]] <- sqrt((1/(sum(!up.ind) - 1))*sum((vec.conf.u[!up.ind] - max(angles.add_u[[uclt[i]]]))^2))
         }
 
       }else{
@@ -220,6 +230,8 @@ sigma_funct <- function(expr, clusters, exclude = NULL, confidence = F, exp_gene
         if(confidence){
           sd.up[[uclt[i]]] <- 0
           sd.down[[uclt[i]]] <- 0
+          sd.up.u[[uclt[i]]] <- 0
+          sd.down.u[[uclt[i]]] <- 0
         }
 
       }
@@ -240,8 +252,12 @@ sigma_funct <- function(expr, clusters, exclude = NULL, confidence = F, exp_gene
   if(confidence){
     maximum_measure <- data.frame( EV = unlist(lapply(angles.add, max)), upper = unlist(lapply(angles.add, max)) + unlist(sd.up),
                                    lower = unlist(lapply(angles.add, max)) - unlist(sd.down))
+
+    maximum_measure.u <- data.frame( EV = unlist(lapply(angles.add_u, max)), upper = unlist(lapply(angles.add_u, max)) + unlist(sd.up.u),
+                                   lower = unlist(lapply(angles.add_u, max)) - unlist(sd.down.u))
   }else{
     maximum_measure <- unlist(lapply(angles.add, max))
+    maximum_measure.u <- unlist(lapply(angles.add_u, max))
   }
 
   all_info <- data.frame(sigma = unlist(angles.add), g_sigma = unlist(angles.add_u), lambda = unlist(lambdas.add),
@@ -250,7 +266,7 @@ sigma_funct <- function(expr, clusters, exclude = NULL, confidence = F, exp_gene
   all_info$celltype <- rep(names(angles.add), lengths(angles.add))
   rownames(all_info) <- NULL
 
-  return(list(maximum_measure = maximum_measure, all_info = all_info, genes = gene.list, rmt_out = rmt.list, cell.index = cell.index, p.val.mp.fit = pvals.mp,
+  return(list(sigma = maximum_measure, g_sigma = maximum_measure.u, all_info = all_info, genes = gene.list, rmt_out = rmt.list, cell.index = cell.index, p.val.mp.fit = pvals.mp,
               input_parameters = list(expr = expr, clusters = clusters, exclude = exclude)))
 }
 
