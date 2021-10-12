@@ -247,7 +247,7 @@ sigma_funct <- function(expr, clusters, exclude = NULL, confidence = F, exp_gene
     pvals.mp <- c(pvals.mp, rmt.list[[i]]$p.value_mp_fit)
   }
   names(pvals.mp) <- u.cl
-  pvals.mp <- p.adjust(pvals.mp, "BH")
+  pvals.mp <- c(p.adjust(pvals.mp[!is.na(pvals.mp)], "BH"), pvals.mp[is.na(pvals.mp)])
 
   if(confidence){
     maximum_measure <- data.frame( EV = unlist(lapply(angles.add, max)), upper = unlist(lapply(angles.add, max)) + unlist(sd.up),

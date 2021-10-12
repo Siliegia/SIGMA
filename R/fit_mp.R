@@ -94,9 +94,14 @@ fit_mp <- function(expr, sample = FALSE, cor = TRUE, nu = 50, p.val = 0.01){
   cat("Market Mode: ", N + 1 - transcriptome_mode, "\n")
 
   #Calculating p-value
-  r2 <- s$values[ !(colSums(V>0) == 0 | colSums(V<0) == 0) & s$values <= RMTmaxEig]
-  r <- sigma*rmp(1000, ndf = M, pdim = N)
-  p.val.mp <- ks.test(r, r2)$p.value
+  if(N > 50){
+    r2 <- s$values[ !(colSums(V>0) == 0 | colSums(V<0) == 0) & s$values <= RMTmaxEig]
+    r <- sigma*rmp(1000, ndf = M, pdim = N)
+    p.val.mp <- ks.test(r, r2)$p.value
+  }else{
+    p.val.mp <- NA
+  }
+
 
   #Critical eigenvalue
   RMTmaxIndex <- which(eigvals > tw)
