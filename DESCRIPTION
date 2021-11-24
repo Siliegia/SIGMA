@@ -9,7 +9,7 @@ Authors@R:
            comment = c(ORCID = "https://orcid.org/0000-0002-1935-8665"))
 Description: Caclualtes the clusterability measure SIGMA for each cluster of a scRNA-seq data set. With this measure it is possible to decide if sub-clustering is 
     necessary. 
-License: GPL-2
+License: GPL-3 | file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
