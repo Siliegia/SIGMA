@@ -1,5 +1,6 @@
 SIGMA: A clusterability measure for scRNA-seq data
 ==================================================
+IMPORTANT: This R package is depricated. The new version is called phiclust and can be found here: [Semraulab/phiclust](https://github.com/semraulab/phiclust)
 
 A package to calculate clusterability in clusters of scRNA-seq data. By
 applying this measure you can assess if meaningful variability is left
